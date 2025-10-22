@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/btnCloseDialog"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_close_24"
+        android:tint="#1E3A8A"
+        android:layout_gravity="end"
+        android:contentDescription="Fechar"
+        android:padding="4dp"/>
+
+    <ImageView
+        android:id="@+id/imgDialogUser"
+        android:src="@drawable/ic_person_24"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#1E3A8A"
+        android:padding="8dp"
+        android:tint="#FFFFFF"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/textEmailDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="email@exemplo.com"
+        android:textSize="16sp"
+        android:textColor="#1E3A8A"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/buttonPerfilSuporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Suporte"
+        android:textColor="#1E3A8A"
+        android:backgroundTint="#E0E7FF"
+        android:textAllCaps="false"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/buttonPerfilTrocarSenha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trocar senha"
+        android:textColor="#1E3A8A"
+        android:backgroundTint="#E0E7FF"
+        android:textAllCaps="false"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/buttonPerfilSair"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sair"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E3A8A"
+        android:textAllCaps="false"/>
+</LinearLayout>

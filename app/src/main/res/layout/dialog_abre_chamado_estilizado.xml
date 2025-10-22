@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/textTituloAbrirChamado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Abrir Novo Chamado"
+        android:textSize="20sp"
+        android:textColor="#1E3A8A"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <Spinner
+        android:id="@+id/spinnerProblemas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editDescricao"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Descreva o problema (opcional)"
+        android:padding="12dp"/>
+
+    <Button
+        android:id="@+id/buttonEnviarChamado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enviar"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E3A8A"
+        android:padding="12dp"
+        android:layout_marginTop="24dp"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/buttonCancelarAbrirChamado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:textColor="#1E3A8A"
+        android:backgroundTint="#E0E7FF"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:textAllCaps="false"/>
+</LinearLayout>
