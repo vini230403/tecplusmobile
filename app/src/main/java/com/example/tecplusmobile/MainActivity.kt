@@ -47,7 +47,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             val senhaSalva = sharedPreferences.getString(email, null)
-            if (senhaSalva == pass) {
+            if (senhaSalva == null) {
+                showCustomToast("Usuário não cadastrado", false)
+            } else if (senhaSalva == pass) {
                 val editor = sharedPreferences.edit()
                 editor.putString("ultimoEmail", email)
                 editor.apply()
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
             } else {
-                showCustomToast("Usuário não encontrado. Cadastre-se!", false)
+                showCustomToast("Senha incorreta", false)
             }
         }
 
@@ -83,8 +85,9 @@ class MainActivity : AppCompatActivity() {
                 showCustomToast("Email inválido", false)
                 return@setOnClickListener
             }
-            if (novaSenha.isEmpty()) {
-                showCustomToast("Senha não pode ser vazia", false)
+
+            if (!isSenhaSegura(novaSenha)) {
+                showCustomToast("A senha precisa ter ao menos 8 caracteres, incluir número e caractere especial.", false)
                 return@setOnClickListener
             }
 
@@ -107,7 +110,15 @@ class MainActivity : AppCompatActivity() {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    private fun showCustomToast(mensagem: String, isSuccess: Boolean = true) {
+    // Regras de senha: mínimo 8, pelo menos um número e um caractere especial
+    fun isSenhaSegura(senha: String): Boolean {
+        val temNumero = senha.any { it.isDigit() }
+        val temEspecial = senha.any { "!@#\$%^&*()_+-=[]{},.<>?|\\/".contains(it) }
+        return senha.length >= 8 && temNumero && temEspecial
+    }
+
+    // Toast customizado para feedback
+    fun showCustomToast(mensagem: String, isSuccess: Boolean = true) {
         val inflater = layoutInflater
         val layout = inflater.inflate(R.layout.toast_custom, null)
         val textToast = layout.findViewById<TextView>(R.id.textToast)
@@ -117,6 +128,7 @@ class MainActivity : AppCompatActivity() {
         iconToast.setImageResource(
             if (isSuccess) R.drawable.ic_check_24 else R.drawable.ic_close_24
         )
+        // Cinza claro para erro, azul moderno para sucesso
         textToast.setTextColor(
             if (isSuccess) android.graphics.Color.parseColor("#000000")
             else android.graphics.Color.parseColor("#000000")

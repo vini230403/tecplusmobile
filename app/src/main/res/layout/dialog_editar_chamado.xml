@@ -1,15 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/textTituloAbrirChamado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar Chamado"
+        android:textSize="20sp"
+        android:textColor="#1E3A8A"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <Spinner
+        android:id="@+id/spinnerEditarChamado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:id="@+id/editDescricaoEditar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Descrição do chamado"
+        android:layout_height="120dp"
+        android:gravity="top"
         android:inputType="textMultiLine"
-        android:minLines="3"/>
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Descreva o problema (opcional)"
+        android:padding="12dp"/>
+
+    <Button
+        android:id="@+id/buttonSalvarEdicao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salvar"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E3A8A"
+        android:padding="12dp"
+        android:layout_marginTop="24dp"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/buttonCancelarEdicao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:textColor="#1E3A8A"
+        android:backgroundTint="#E0E7FF"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:textAllCaps="false"/>
 </LinearLayout>

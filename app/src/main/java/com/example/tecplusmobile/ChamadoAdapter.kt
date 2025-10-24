@@ -4,39 +4,37 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageButton
+import android.widget.TextView
 
 class ChamadoAdapter(
     private val context: Context,
     private val chamados: MutableList<String>,
-    private val onEditClick: (position: Int) -> Unit
+    private val onEditarClick: (position: Int) -> Unit,
+    private val onExcluirClick: (position: Int) -> Unit
 ) : BaseAdapter() {
 
     override fun getCount(): Int = chamados.size
-
-    override fun getItem(position: Int): String = chamados[position]
-
+    override fun getItem(position: Int): Any = chamados[position]
     override fun getItemId(position: Int): Long = position.toLong()
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_chamado_edit, parent, false)
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view = convertView ?: LayoutInflater.from(context)
+            .inflate(R.layout.item_chamado_edit, parent, false)
 
         val textChamado = view.findViewById<TextView>(R.id.textChamado)
-        val buttonRemove = view.findViewById<ImageButton>(R.id.buttonRemoveChamado)
-        val buttonEdit = view.findViewById<ImageButton>(R.id.buttonEditChamado)
+        val btnEditar = view.findViewById<ImageButton>(R.id.buttonEditChamado)
+        val btnExcluir = view.findViewById<ImageButton>(R.id.buttonRemoveChamado)
 
-        textChamado.text = getItem(position)
+        textChamado.text = chamados[position]
 
-        buttonRemove.setOnClickListener {
-            chamados.removeAt(position)
-            notifyDataSetChanged()
-            if (context is HomeActivity) {
-                context.showCustomToast("Chamado removido", true)
-            }
+        btnEditar.setOnClickListener {
+            onEditarClick(position)
         }
 
-        buttonEdit.setOnClickListener {
-            onEditClick(position)
+        btnExcluir.setOnClickListener {
+            onExcluirClick(position)
         }
 
         return view

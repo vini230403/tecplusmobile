@@ -1,16 +1,18 @@
 package com.example.tecplusmobile
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var chamadoAdapter: ChamadoAdapter
     private var chamadosUsuario = mutableListOf<String>()
     private lateinit var listViewChamados: ListView
+    private var dialogMeusChamados: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,13 +20,20 @@ class HomeActivity : AppCompatActivity() {
 
         listViewChamados = findViewById(R.id.listViewChamados)
 
-        chamadoAdapter = ChamadoAdapter(this, chamadosUsuario) { position ->
-            mostrarDialogEditarChamado(position, chamadoAdapter)
-        }
+        chamadoAdapter = ChamadoAdapter(
+            this,
+            chamadosUsuario,
+            onEditarClick = { position -> showEditarChamadoDialog(position) },
+            onExcluirClick = { position ->
+                showConfirmarExclusaoDialog {
+                    excluirChamado(position)
+                }
+            }
+        )
         listViewChamados.adapter = chamadoAdapter
 
         findViewById<LinearLayout>(R.id.layoutAbrirChamado).setOnClickListener {
-            showNewChamadoDialog()
+            showAbreChamadoDialog()
         }
 
         findViewById<LinearLayout>(R.id.layoutMeusChamados).setOnClickListener {
@@ -45,103 +54,174 @@ class HomeActivity : AppCompatActivity() {
     private fun carregarChamadosSalvos() {
         val email = getEmailUsuarioLogado()
         val prefs = getSharedPreferences("TecPlusPrefs", MODE_PRIVATE)
-        val chamadosSalvar = prefs.getStringSet("$email-chamados", emptySet()) ?: emptySet()
+        val chamadosSalvos = prefs.getStringSet("$email-chamados", emptySet()) ?: emptySet()
         chamadosUsuario.clear()
-        chamadosUsuario.addAll(chamadosSalvar)
+        chamadosUsuario.addAll(chamadosSalvos)
         chamadoAdapter.notifyDataSetChanged()
     }
 
     private fun salvarChamados() {
         val email = getEmailUsuarioLogado()
         val prefs = getSharedPreferences("TecPlusPrefs", MODE_PRIVATE)
-        val editor = prefs.edit()
-        editor.putStringSet("$email-chamados", chamadosUsuario.toSet())
-        editor.apply()
+        prefs.edit().putStringSet("$email-chamados", chamadosUsuario.toSet()).apply()
     }
 
     private fun abrirDialogMeusChamados() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_meus_chamados, null)
         val listView = dialogView.findViewById<ListView>(R.id.listViewMeusChamados)
 
-        lateinit var dialogAdapter: ChamadoAdapter
+        lateinit var adapter: ChamadoAdapter  // Declara aqui
 
-        dialogAdapter = ChamadoAdapter(this, chamadosUsuario) { position ->
-            mostrarDialogEditarChamado(position, dialogAdapter)
-        }
-        listView.adapter = dialogAdapter
+        adapter = ChamadoAdapter(
+            this,
+            chamadosUsuario,
+            onEditarClick = { position -> showEditarChamadoDialog(position) },
+            onExcluirClick = { position ->
+                showConfirmarExclusaoDialog {
+                    chamadosUsuario.removeAt(position)
+                    adapter.notifyDataSetChanged()  // Agora adapter existe
+                    salvarChamados()
+                    showCustomToast("Chamado excluído com sucesso", true)
+                }
+            }
+        )
+        listView.adapter = adapter
+
+        dialogMeusChamados = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setView(dialogView)
+            .create()
 
         val btnFechar = dialogView.findViewById<Button>(R.id.buttonFecharMeusChamados)
+        btnFechar.setOnClickListener {
+            dialogMeusChamados?.dismiss()
+        }
+
+        dialogMeusChamados?.show()
+    }
+
+    private fun excluirChamado(position: Int) {
+        chamadosUsuario.removeAt(position)
+        salvarChamados()
+        chamadoAdapter.notifyDataSetChanged()
+        showCustomToast("Chamado excluído com sucesso", true)
+    }
+
+    fun showAbreChamadoDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_abre_chamado_estilizado, null)
+        val spinner = dialogView.findViewById<Spinner>(R.id.spinnerProblemas)
+        val editDescricao = dialogView.findViewById<EditText>(R.id.editDescricao)
+        val btnEnviar = dialogView.findViewById<Button>(R.id.buttonEnviarChamado)
+        val btnCancelar = dialogView.findViewById<Button>(R.id.buttonCancelarAbrirChamado)
+
+        val problemas = listOf(
+            "Problema na impressora",
+            "Wifi não conecta",
+            "Tela do computador preta",
+            "Outro..."
+        )
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, problemas)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerAdapter
 
         val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setView(dialogView)
             .create()
 
-        btnFechar.setOnClickListener {
+        btnEnviar.setOnClickListener {
+            val problemaSelecionado = spinner.selectedItem.toString()
+            val descricao = editDescricao.text.toString().trim()
+            val chamadoTexto = if (descricao.isEmpty())
+                "$problemaSelecionado (Em Análise)"
+            else
+                "$problemaSelecionado - $descricao (Em Análise)"
+
+            chamadosUsuario.add(chamadoTexto)
+            showCustomToast("Chamado enviado", true)
+
+            salvarChamados()
+            chamadoAdapter.notifyDataSetChanged()
             dialog.dismiss()
         }
 
-        listView.setOnItemLongClickListener { _, _, position, _ ->
-            AlertDialog.Builder(this)
-                .setTitle("Excluir Chamado")
-                .setMessage("Tem certeza que deseja excluir este chamado?")
-                .setIcon(R.drawable.ic_close_24)
-                .setPositiveButton("Excluir") { _, _ ->
-                    chamadosUsuario.removeAt(position)
-                    dialogAdapter.notifyDataSetChanged()
-                    salvarChamados()
-                    showCustomToast("Chamado removido", true)
-                    if (chamadosUsuario.isEmpty()) {
-                        dialog.dismiss()
-                        showCustomToast("Nenhum chamado aberto", false)
-                    }
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
-            true
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
     }
 
-    private fun mostrarDialogEditarChamado(position: Int, adapter: ChamadoAdapter) {
+    fun showEditarChamadoDialog(posicaoEditar: Int) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_editar_chamado, null)
+        val spinner = dialogView.findViewById<Spinner>(R.id.spinnerEditarChamado)
         val editDescricao = dialogView.findViewById<EditText>(R.id.editDescricaoEditar)
+        val btnSalvar = dialogView.findViewById<Button>(R.id.buttonSalvarEdicao)
+        val btnCancelar = dialogView.findViewById<Button>(R.id.buttonCancelarEdicao)
 
-        val chamadoCompleto = chamadosUsuario[position]
+        val problemas = listOf(
+            "Problema na impressora",
+            "Wifi não conecta",
+            "Tela do computador preta",
+            "Outro..."
+        )
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, problemas)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerAdapter
+
+        val chamadoCompleto = chamadosUsuario[posicaoEditar]
         val statusIndex = chamadoCompleto.lastIndexOf("(Em Análise)")
-        val descricaoOriginal = if (statusIndex != -1) {
-            chamadoCompleto.substring(0, statusIndex).trim()
-        } else {
-            chamadoCompleto
-        }
+        val textoChamado = if (statusIndex != -1) chamadoCompleto.substring(0, statusIndex).trim() else chamadoCompleto
+        val split = textoChamado.split(" - ", limit = 2)
+        val opcaoSelecionada = split.getOrNull(0) ?: problemas[0]
+        val descricaoAntiga = split.getOrNull(1) ?: ""
+        spinner.setSelection(problemas.indexOf(opcaoSelecionada).takeIf { it >= 0 } ?: 0)
+        editDescricao.setText(descricaoAntiga)
 
-        editDescricao.setText(descricaoOriginal)
-
-        val dialogEditar = AlertDialog.Builder(this)
-            .setTitle("Editar Chamado")
+        val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setView(dialogView)
-            .setIcon(R.drawable.ic_check_24)
-            .setPositiveButton("Salvar", null)
-            .setNegativeButton("Cancelar", null)
             .create()
 
-        dialogEditar.setOnShowListener {
-            val btnSalvar = dialogEditar.getButton(AlertDialog.BUTTON_POSITIVE)
-            btnSalvar.setOnClickListener {
-                val textoEditado = editDescricao.text.toString().trim()
-                if (textoEditado.isNotEmpty()) {
-                    chamadosUsuario[position] = "$textoEditado (Em Análise)"
-                    adapter.notifyDataSetChanged()
-                    salvarChamados()
-                    showCustomToast("Chamado atualizado", true)
-                    dialogEditar.dismiss()
-                } else {
-                    showCustomToast("Descrição não pode ser vazia", false)
-                }
-            }
+        btnSalvar.setOnClickListener {
+            val problemaSelecionado = spinner.selectedItem.toString()
+            val descricao = editDescricao.text.toString().trim()
+            val chamadoTexto = if (descricao.isEmpty())
+                "$problemaSelecionado (Em Análise)"
+            else
+                "$problemaSelecionado - $descricao (Em Análise)"
+            chamadosUsuario[posicaoEditar] = chamadoTexto
+            salvarChamados()
+            chamadoAdapter.notifyDataSetChanged()
+            dialog.dismiss()
+            dialogMeusChamados?.dismiss()  // Fecha o modal "Meus Chamados"
+            showCustomToast("Chamado atualizado com sucesso", true)
         }
 
-        dialogEditar.show()
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    fun showConfirmarExclusaoDialog(onConfirm: () -> Unit) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_confirmar_exclusao, null)
+        val btnSim = dialogView.findViewById<Button>(R.id.btnConfirmarExclusao)
+        val btnCancelar = dialogView.findViewById<Button>(R.id.btnCancelarExclusao)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        btnSim.setOnClickListener {
+            onConfirm()
+            dialog.dismiss()
+        }
+
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun abrirDialogPerfil() {
@@ -181,54 +261,10 @@ class HomeActivity : AppCompatActivity() {
 
     private fun getEmailUsuarioLogado(): String {
         val prefs = getSharedPreferences("TecPlusPrefs", MODE_PRIVATE)
-        return prefs.getString("ultimoEmail", "(desconhecido)") ?: "(desconhecido)"
+        return prefs.getString("ultimoEmail", "") ?: ""
     }
 
-    private fun showNewChamadoDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_abre_chamado_estilizado, null)
-
-        val spinner = dialogView.findViewById<Spinner>(R.id.spinnerProblemas)
-        val editDescricao = dialogView.findViewById<EditText>(R.id.editDescricao)
-        val btnEnviar = dialogView.findViewById<Button>(R.id.buttonEnviarChamado)
-        val btnCancelar = dialogView.findViewById<Button>(R.id.buttonCancelarAbrirChamado)
-
-        val problemas = listOf(
-            "Problema na impressora",
-            "Wifi não conecta",
-            "Tela do computador preta",
-            "Outro..."
-        )
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, problemas)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = spinnerAdapter
-
-        val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
-            .setView(dialogView)
-            .setIcon(R.drawable.ic_check_24)
-            .create()
-
-        btnEnviar.setOnClickListener {
-            val problemaSelecionado = spinner.selectedItem.toString()
-            val descricao = editDescricao.text.toString().trim()
-            val chamadoTexto = if (descricao.isEmpty())
-                "$problemaSelecionado (Em Análise)"
-            else
-                "$problemaSelecionado - $descricao (Em Análise)"
-            chamadosUsuario.add(chamadoTexto)
-            salvarChamados()
-            chamadoAdapter.notifyDataSetChanged()
-            showCustomToast("Chamado enviado", true)
-            dialog.dismiss()
-        }
-
-        btnCancelar.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    public fun showCustomToast(mensagem: String, isSuccess: Boolean = true) {
+    fun showCustomToast(mensagem: String, isSuccess: Boolean = true) {
         val inflater = layoutInflater
         val layout = inflater.inflate(R.layout.toast_custom, null)
         val textToast = layout.findViewById<TextView>(R.id.textToast)
@@ -238,10 +274,7 @@ class HomeActivity : AppCompatActivity() {
         iconToast.setImageResource(
             if (isSuccess) R.drawable.ic_check_24 else R.drawable.ic_close_24
         )
-        textToast.setTextColor(
-            if (isSuccess) android.graphics.Color.parseColor("#000000")
-            else android.graphics.Color.parseColor("#000000")
-        )
+        textToast.setTextColor(android.graphics.Color.parseColor("#000000"))
 
         val toast = Toast(applicationContext)
         toast.duration = Toast.LENGTH_SHORT
