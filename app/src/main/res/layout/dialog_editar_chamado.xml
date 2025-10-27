@@ -31,7 +31,9 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/edittext_background"
         android:hint="Descreva o problema (opcional)"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:textColor="#2E2E2E"
+        android:textColorHint="#bbbbbb"/>
 
     <Button
         android:id="@+id/buttonSalvarEdicao"

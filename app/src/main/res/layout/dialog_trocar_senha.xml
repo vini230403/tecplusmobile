@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:padding="24dp"
+        android:orientation="vertical"
+        android:background="@drawable/dialog_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Trocando a senha atual"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#0078FF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Senha atual -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/editSenhaAtual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Senha atual"
+                android:inputType="textPassword"
+                android:backgroundTint="#0A1F44"
+                android:textColor="#2E2E2E"
+                android:textColorHint="#bbbbbb"
+                android:paddingEnd="48dp"
+                android:padding="12dp" />
+
+            <ImageView
+                android:id="@+id/ivToggleSenhaAtual"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_eye_off"
+                android:tint="#bbbbbb"
+                android:contentDescription="Mostrar senha atual"
+                android:clickable="true"
+                android:focusable="true" />
+        </RelativeLayout>
+
+        <!-- Nova senha -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/editTrocaSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nova senha"
+                android:inputType="textPassword"
+                android:backgroundTint="#0A1F44"
+                android:textColor="#2E2E2E"
+                android:textColorHint="#bbbbbb"
+                android:paddingEnd="48dp"
+                android:padding="12dp" />
+
+            <ImageView
+                android:id="@+id/ivToggleNovaSenha"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_eye_off"
+                android:tint="#bbbbbb"
+                android:contentDescription="Mostrar nova senha"
+                android:clickable="true"
+                android:focusable="true" />
+        </RelativeLayout>
+
+        <!-- Confirmar senha -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <EditText
+                android:id="@+id/editTrocaConfirmaSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirmar nova senha"
+                android:inputType="textPassword"
+                android:backgroundTint="#0A1F44"
+                android:textColor="#2E2E2E"
+                android:textColorHint="#bbbbbb"
+                android:paddingEnd="48dp"
+                android:padding="12dp" />
+
+            <ImageView
+                android:id="@+id/ivToggleConfirmarSenha"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_eye_off"
+                android:tint="#bbbbbb"
+                android:contentDescription="Mostrar confirmação"
+                android:clickable="true"
+                android:focusable="true" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/buttonSalvarSenhaNova"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Salvar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0078FF"
+            android:padding="12dp"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/buttonCancelarTrocaSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:textColor="#0078FF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+</ScrollView>

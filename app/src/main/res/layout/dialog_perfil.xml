@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- Botão Fechar -->
     <ImageView
         android:id="@+id/btnCloseDialog"
         android:layout_width="36dp"
@@ -16,6 +17,7 @@
         android:contentDescription="Fechar"
         android:padding="4dp"/>
 
+    <!-- Ícone do usuário -->
     <ImageView
         android:id="@+id/imgDialogUser"
         android:src="@drawable/ic_person_24"
@@ -28,6 +30,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginTop="8dp"/>
 
+    <!-- Email -->
     <TextView
         android:id="@+id/textEmailDialog"
         android:layout_width="match_parent"
@@ -39,32 +42,78 @@
         android:gravity="center"
         android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/buttonPerfilSuporte"
+    <!-- Botão Suporte -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Suporte"
-        android:textColor="#1E3A8A"
-        android:backgroundTint="#E0E7FF"
-        android:textAllCaps="false"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp">
 
-    <Button
-        android:id="@+id/buttonPerfilTrocarSenha"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Trocar senha"
-        android:textColor="#1E3A8A"
-        android:backgroundTint="#E0E7FF"
-        android:textAllCaps="false"
-        android:layout_marginBottom="12dp"/>
+        <Button
+            android:id="@+id/buttonPerfilSuporte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Suporte"
+            android:textColor="#1E3A8A"
+            android:backgroundTint="#E0E7FF"
+            android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/buttonPerfilSair"
+        <ImageView
+            android:id="@+id/iconSuporte"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_help_24"
+            android:tint="#1E3A8A"/>
+    </RelativeLayout>
+
+    <!-- Botão Trocar Senha -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sair"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#1E3A8A"
-        android:textAllCaps="false"/>
+        android:layout_marginBottom="12dp">
+
+        <Button
+            android:id="@+id/buttonPerfilTrocarSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trocar senha"
+            android:textColor="#1E3A8A"
+            android:backgroundTint="#E0E7FF"
+            android:textAllCaps="false" />
+
+        <ImageView
+            android:id="@+id/iconTrocarSenha"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_key_24"
+            android:tint="#1E3A8A"/>
+    </RelativeLayout>
+
+    <!-- Botão Sair -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/buttonPerfilSair"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sair"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1E3A8A"
+            android:textAllCaps="false" />
+
+        <ImageView
+            android:id="@+id/iconSair"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_exit_to_app_24"
+            android:tint="#FFFFFF"/>
+    </RelativeLayout>
+
 </LinearLayout>
